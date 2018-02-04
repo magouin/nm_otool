@@ -12,44 +12,19 @@
 
 #include <ft_nm.h>
 
-int64_t			r_int64(int64_t data)
-{
-	int64_t tmp;
-
-	tmp = (data & 0xff) << 0x38;
-	tmp |= (data & 0xff00) << 0x28;
-	tmp |= (data & 0xff0000) << 0x18;
-	tmp |= (data & 0xff000000) << 0x8;
-	tmp |= (data & 0xff00000000) >> 0x8;
-	tmp |= (data & 0xff0000000000) >> 0x18;
-	tmp |= (data & 0xff000000000000) >> 0x28;
-	tmp |= (data & 0xff00000000000000) >> 0x38;
-	return (tmp);
-}
-
-int				r_int32(int data)
-{
-	int tmp;
-
-	tmp = (data & 0xff) << 0x18;
-	tmp |= (data & 0xff00) << 0x8;
-	tmp |= (data & 0xff0000) >> 0x8;
-	tmp |= (data & 0xff000000) >> 0x18;
-	return (tmp);
-}
-
 struct s_tab	get_smallest(struct s_tab *tab, int *tabi)
 {
 	int					x;
 	struct s_tab		rez;
 	int					index;
 
-	rez = (struct s_tab){-1, NULL};
+	rez = (struct s_tab){0, NULL, 0};
 	x = 0;
 	index = 0;
 	while (tab[x].str)
 	{
-		if (!tabi[x] && (!rez.str || ft_strcmp(rez.str, tab[x].str) > 0))
+		if (!tabi[x] && (!rez.str || ft_strcmp(rez.str, tab[x].str) > 0 ||
+			(!ft_strcmp(rez.str, tab[x].str) && tab[x].value < rez.value)))
 		{
 			rez = tab[x];
 			index = x;

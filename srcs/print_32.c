@@ -20,15 +20,18 @@ static int	get_tabi(struct s_tab **tab, struct symtab_command table,
 
 	*tab = malloc(sizeof(struct s_tab) * (table.nsyms + 1));
 	n = -1;
-	mal = -1;
+	mal = 0;
 	while (++n < table.nsyms)
 		if (!(lst[n].n_type & N_STAB))
 		{
-			(*tab)[++mal].str = bin + table.stroff + lst[n].n_un.n_strx;
+			(*tab)[mal].str = bin + table.stroff + lst[n].n_un.n_strx;
 			(*tab)[mal].nb = n;
+			(*tab)[mal].value = lst[n].n_value;
+			mal++;
 		}
-	(*tab)[mal + 1].str = NULL;
-	(*tab)[mal + 1].nb = -1;
+	(*tab)[mal].str = NULL;
+	(*tab)[mal].nb = 0;
+	(*tab)[mal].value = 0;
 	return (mal);
 }
 
@@ -49,9 +52,9 @@ static void	get_letter(struct nlist *lst, char *seg,
 		c += 32;
 	if (tmp.nb == n.end)
 	{
-		if (lst[n.end].n_value)
+		if (tmp.value)
 			printf("%08x %c %s\n", *(uint *)n.bin == 0xcefaedfe ?
-		r_int32(lst[n.end].n_value) : lst[n.end].n_value, c, tmp.str);
+		r_int32(tmp.value) : (uint)tmp.value, c, tmp.str);
 		else
 			printf("         %c %s\n", c, tmp.str);
 	}

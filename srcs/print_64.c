@@ -26,9 +26,11 @@ static int	get_tabi(struct s_tab **tab, struct symtab_command table,
 		{
 			(*tab)[++mal].nb = n;
 			(*tab)[mal].str = bin + table.stroff + lst[n].n_un.n_strx;
+			(*tab)[mal].value = lst[n].n_value;
 		}
 	(*tab)[mal + 1].str = NULL;
-	(*tab)[mal + 1].nb = -1;
+	(*tab)[mal + 1].nb = 0;
+	(*tab)[mal + 1].nb = 0;
 	return (mal);
 }
 
@@ -49,9 +51,9 @@ static void	get_letter(struct nlist_64 *lst, char *seg,
 		c += 32;
 	if (tmp.nb == n.end)
 	{
-		if (lst[n.end].n_value)
+		if (tmp.value)
 			printf("%016llx %c %s\n", *(uint *)n.bin == 0xcefaedfe ?
-				r_int64(lst[n.end].n_value) : lst[n.end].n_value, c, tmp.str);
+				r_int64(tmp.value) : tmp.value, c, tmp.str);
 		else
 			printf("                 %c %s\n", c, tmp.str);
 	}
