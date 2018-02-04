@@ -59,17 +59,14 @@ int		main(int ac, char **av)
 		FAT_CIGAM || head.magic == FAT_CIGAM_64)
 		return (fat_bin(bin, size, r_int32(((struct fat_header *)bin)->
 			nfat_arch), av));
-	else if (head.magic == MH_MAGIC_64 || head.magic == MH_CIGAM_64)
-	{
-		printf("%s:\nContents of (__TEXT,__text) section\n", av[1]);
-		return (ft_otool_64(bin, head, size, head.magic == MH_MAGIC_64 ? 0 : 1));
-	}
-	else if (head.magic == MH_MAGIC || head.magic == MH_CIGAM)
-	{
-		printf("%s:\nContents of (__TEXT,__text) section\n", av[1]);
+	else if ((head.magic == MH_MAGIC_64 || head.magic == MH_CIGAM_64) &&
+		(printf("%s:\nContents of (__TEXT,__text) section\n", av[1]) || 1))
+		return (ft_otool_64(bin, head, size, head.magic == MH_MAGIC_64 ?
+			0 : 1));
+	else if ((head.magic == MH_MAGIC || head.magic == MH_CIGAM) &&
+		(printf("%s:\nContents of (__TEXT,__text) section\n", av[1]) || 1))
 		return (ft_otool_32(bin, *(struct mach_header *)bin, size, head.
 			magic == MH_MAGIC ? 0 : 1));
-	}
-		printf("%s: is not an object file\n", av[1] ? av[1] :
-			"a.out");
+		printf("%s: is not an object file\n", av[1] ? av[1] : "a.out");
+	return (1);
 }
