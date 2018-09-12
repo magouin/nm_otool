@@ -42,15 +42,14 @@ int		ft_get_error(int error)
 	return (1);
 }
 
-int		main(int ac, char **av)
+int		get_all_file(char **av)
 {
 	size_t					size;
 	void					*bin;
 	struct mach_header_64	head;
 	int						fd;
 
-	(void)ac;
-	if (!(size = ft_open(av[1] ? av[1] : "a.out", av[0], &fd)))
+	if (!(size = ft_open(av[1], av[0], &fd)))
 		return (ft_get_error(1));
 	if ((bin = mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == 0)
 		return (ft_get_error(2));
@@ -68,5 +67,28 @@ int		main(int ac, char **av)
 		return (ft_otool_32(bin, *(struct mach_header *)bin, size, head.
 			magic == MH_MAGIC ? 0 : 1));
 		printf("%s: is not an object file\n", av[1] ? av[1] : "a.out");
+	return (1);
+}
+
+int		main(int ac, char **av)
+{
+	int						x;
+	char					*str[2];
+
+	(void)ac;
+	x = 1;
+	str[0] = av[0];
+	str[1] = av[1];
+	if (av[1] == NULL)
+	{
+		str[1] = "a.out";
+		x--;
+	}
+	while (av[x])
+	{
+		get_all_file(str);
+		str[1] = av[x + 1];
+		x++;
+	}
 	return (1);
 }
