@@ -52,10 +52,15 @@ static void	get_letter(struct nlist_64 *lst, char *seg,
 	if (tmp.nb == n.end)
 	{
 		if (tmp.value)
-			printf("%016llx %c %s\n", *(uint *)n.bin == 0xcefaedfe ?
-				r_int64(tmp.value) : tmp.value, c, tmp.str);
+		{
+			printfllx(*(uint *)n.bin == 0xcefaedfe ? r_int64(tmp.value) : tmp.value, 16, " ");
+			write(1, &c, 1);
+			write(1, " ", 1);
+			write(1, tmp.str, ft_strlen(tmp.str));
+			write(1, "\n", 1);
+		}
 		else
-			printf("                 %c %s\n", c, tmp.str);
+			ft_printf("                 %c %s\n", c, tmp.str);
 	}
 }
 

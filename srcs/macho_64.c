@@ -71,7 +71,7 @@ int				macho_64(void *bin, struct mach_header_64 head,
 		get_info_cmd((struct s_norm){end, &off, bin}, &table, &lst);
 		if (off >= size_file)
 		{
-			printf("Binary corrupted!\n");
+			ft_printf("Binary corrupted!\n");
 			return (1);
 		}
 		n++;

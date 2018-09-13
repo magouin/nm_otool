@@ -53,10 +53,10 @@ static void	get_letter(struct nlist *lst, char *seg,
 	if (tmp.nb == n.end)
 	{
 		if (tmp.value)
-			printf("%08x %c %s\n", *(uint *)n.bin == 0xcefaedfe ?
+			ft_printf("%08x %c %s\n", *(uint *)n.bin == 0xcefaedfe ?
 		r_int32(tmp.value) : (uint)tmp.value, c, tmp.str);
 		else
-			printf("         %c %s\n", c, tmp.str);
+			ft_printf("         %c %s\n", c, tmp.str);
 	}
 }
 

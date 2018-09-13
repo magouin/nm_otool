@@ -16,7 +16,7 @@ int				verif_offset(size_t offset, size_t size_file)
 {
 	if (offset >= size_file)
 	{
-		printf("Binary corrupted!\n");
+		ft_printf("Binary corrupted!\n");
 		return (1);
 	}
 	return (0);
@@ -63,7 +63,7 @@ static int		write_rez(char *rez, struct s_norm n, struct segment_command_64
 		sec = *(struct section_64 *)(n.bin + *n.off_set);
 		if (*n.off_set >= size_file)
 		{
-			printf("Binary corrupted!\n");
+			ft_printf("Binary corrupted!\n");
 			return (-1);
 		}
 		if (ft_strequ(sec.sectname, "__data"))

@@ -51,7 +51,7 @@ static int		write_rez(char *rez, struct s_norm n, struct segment_command
 		sec = *(struct section *)(n.bin + *n.off_set);
 		if (*n.off_set >= size_file)
 		{
-			printf("Binary corrupted!\n");
+			ft_printf("Binary corrupted!\n");
 			return (-1);
 		}
 		if (ft_strequ(sec.sectname, "__data"))

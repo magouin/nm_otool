@@ -20,13 +20,13 @@ size_t	ft_open(char *name, char *exec, int *fd)
 	size = 0;
 	*fd = open(name, O_RDONLY);
 	if (*fd == -1)
-		printf("%s: '%s': No such file or directory\n", exec, name);
+		ft_printf("%s: '%s': No such file or directory\n", exec, name);
 	if (fstat(*fd, &buff) != -1)
 	{
 		size = buff.st_size;
 		if (buff.st_mode & S_IFDIR)
 		{
-			printf("%s: %s: Is a directory.\n", exec, name);
+			ft_printf("%s: %s: Is a directory.\n", exec, name);
 			size = 0;
 		}
 	}
@@ -36,9 +36,9 @@ size_t	ft_open(char *name, char *exec, int *fd)
 int		ft_get_error(int error)
 {
 	if (error == 1)
-		printf("Need a file\n");
+		ft_printf("Need a file\n");
 	if (error == 2)
-		printf("Failed to alloc size memory\n");
+		ft_printf("Failed to alloc size memory\n");
 	return (1);
 }
 
@@ -59,14 +59,14 @@ int		get_all_file(char **av)
 		return (fat_bin(bin, size, r_int32(((struct fat_header *)bin)->
 			nfat_arch), av));
 	else if ((head.magic == MH_MAGIC_64 || head.magic == MH_CIGAM_64) &&
-		(printf("%s:\nContents of (__TEXT,__text) section\n", av[1]) || 1))
+		(ft_printf("%s:\nContents of (__TEXT,__text) section\n", av[1]) || 1))
 		return (ft_otool_64(bin, head, size, head.magic == MH_MAGIC_64 ?
 			0 : 1));
 	else if ((head.magic == MH_MAGIC || head.magic == MH_CIGAM) &&
-		(printf("%s:\nContents of (__TEXT,__text) section\n", av[1]) || 1))
+		(ft_printf("%s:\nContents of (__TEXT,__text) section\n", av[1]) || 1))
 		return (ft_otool_32(bin, *(struct mach_header *)bin, size, head.
 			magic == MH_MAGIC ? 0 : 1));
-		printf("%s: is not an object file\n", av[1] ? av[1] : "a.out");
+		ft_printf("%s: is not an object file\n", av[1] ? av[1] : "a.out");
 	return (1);
 }
 

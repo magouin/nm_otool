@@ -43,13 +43,13 @@ size_t			ft_open(char *name, char *exec, int *fd)
 	size = 0;
 	*fd = open(name, O_RDONLY);
 	if (*fd == -1)
-		printf("%s: %s: No such file or directory\n", exec, name);
+		ft_printf("%s: %s: No such file or directory\n", exec, name);
 	if (fstat(*fd, &buff) != -1)
 	{
 		size = buff.st_size;
 		if (buff.st_mode & S_IFDIR)
 		{
-			printf("%s: %s: Is a directory.\n", exec, name);
+			ft_printf("%s: %s: Is a directory.\n", exec, name);
 			size = 0;
 		}
 	}
@@ -78,7 +78,7 @@ int				main(int ac, char **av)
 	else if (head.magic == MH_MAGIC || head.magic == MH_CIGAM)
 		return (macho_32(bin, *(struct mach_header *)bin, size, head.
 			magic == MH_MAGIC ? 0 : 1));
-		printf("%s: %s The file was not recognized as a valid objec\
+		ft_printf("%s: %s The file was not recognized as a valid objec\
 		t file\n", av[1] ? av[1] : "a.out", av[0]);
 	return (3);
 }
