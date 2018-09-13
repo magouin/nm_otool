@@ -6,7 +6,7 @@
 #    By: magouin <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/05/27 13:21:11 by magouin           #+#    #+#              #
-#    Updated: 2017/11/29 16:20:51 by magouin          ###   ########.fr        #
+#    Updated: 2018/09/12 16:22:40 by magouin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ ifeq ($(DEBUG), yes)
 	FDEBUG	=	-g
 endif
 
-WFLAGS	=	-Wall -Wextra -Werror
+WFLAGS	=	-Wall -Wextra -Werror -g
 OPTI	=	-I
 LS		=	ls -1
 GREP	=	grep

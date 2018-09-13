@@ -6,7 +6,8 @@ SRC_NAME =	ft_nm.c \
 			get_index_64.c \
 			print_32.c \
 			print_64.c \
-			dup.c
+			dup.c \
+			print.c
 
 INC_PATH = ./includes
 OBJ_PATH = ./obj/
@@ -36,7 +37,8 @@ O_SRC_NAME =	ft_otool.c \
 				dup.c \
 				otool_32.c \
 				otool_64.c \
-				fat_bin_o.c 
+				fat_bin_o.c \
+				print.c
 
 O_INC_PATH = ./includes
 O_OBJ_PATH = ./obj/
