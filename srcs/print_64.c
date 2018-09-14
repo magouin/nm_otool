@@ -30,7 +30,6 @@ static int	get_tabi(struct s_tab **tab, struct symtab_command table,
 		}
 	(*tab)[mal + 1].str = NULL;
 	(*tab)[mal + 1].nb = 0;
-	(*tab)[mal + 1].nb = 0;
 	return (mal);
 }
 

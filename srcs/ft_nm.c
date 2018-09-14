@@ -56,18 +56,13 @@ size_t			ft_open(char *name, char *exec, int *fd)
 	return (size);
 }
 
-int				main(int ac, char **av)
+int				multiple_argv(char **av, size_t size, int fd)
 {
-	size_t					size;
 	void					*bin;
 	struct mach_header_64	head;
-	int						fd;
 
-	(void)ac;
-	if (!(size = ft_open(av[1] ? av[1] : "a.out", av[0], &fd)))
-		return (1);
 	if ((bin = mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == 0)
-		return (2);
+		return (1);
 	head = *(struct mach_header_64 *)bin;
 	if (head.magic == FAT_MAGIC_64 || head.magic == FAT_MAGIC || head.magic ==
 		FAT_CIGAM || head.magic == FAT_CIGAM_64)
@@ -80,5 +75,30 @@ int				main(int ac, char **av)
 			magic == MH_MAGIC ? 0 : 1));
 		ft_printf("%s: %s The file was not recognized as a valid objec\
 		t file\n", av[1] ? av[1] : "a.out", av[0]);
-	return (3);
+	return (1);
+}
+
+int				main(int ac, char **av)
+{
+	int						x;
+	int						tmp;
+	size_t					size;
+	int						fd;
+	int						ret;
+
+	x = 1;
+	(void)ac;
+	tmp = 0;
+	if (!(size = ft_open(av[1] ? av[1] : "a.out", av[0], &fd)))
+		return (1);
+	while (av[x])
+	{
+		x == 1 ? 0 : (size = ft_open(av[x], av[0], &fd));
+		av[1] = av[x];
+		ret = multiple_argv(av, size, fd);
+		tmp = tmp ? 0 : ret;
+		close(fd);
+		x++;
+	}
+	return (tmp);
 }

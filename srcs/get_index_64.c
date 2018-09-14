@@ -61,11 +61,8 @@ static int		write_rez(char *rez, struct s_norm n, struct segment_command_64
 	while (nb < seg.nsects)
 	{
 		sec = *(struct section_64 *)(n.bin + *n.off_set);
-		if (*n.off_set >= size_file)
-		{
-			ft_printf("Binary corrupted!\n");
+		if (verif_offset(*n.off_set, size_file))
 			return (-1);
-		}
 		if (ft_strequ(sec.sectname, "__data"))
 			rez[n.end] = 'D';
 		else if (ft_strequ(sec.sectname, "__text"))
@@ -81,14 +78,15 @@ static int		write_rez(char *rez, struct s_norm n, struct segment_command_64
 	return (n.end);
 }
 
-static int		segment_64(struct s_norm2 n)
+static int		segment_64(struct s_norm2 n, size_t size_file)
 {
 	struct segment_command_64	seg;
 	int							tmp;
 
 	seg = *((struct segment_command_64 *)(n.bin + n.off_set));
 	seg.nsects = !n.end ? seg.nsects : r_int32(seg.nsects);
-	*n.off_sec = n.off_set + sizeof(struct segment_command_64);
+	if (verif_offset((*n.off_sec = n.off_set + sizeof(struct segment_command_64)), size_file))
+		return (-1);
 	if ((tmp = write_rez(n.rez, (struct s_norm){*n.nb_sec, n.off_sec, n.bin},
 		seg, n.size_file)) == -1)
 		return (1);
@@ -116,7 +114,7 @@ char			*get_index_64(int ncmds, int end, size_t size_file, void *bin)
 		cmd.cmd = !end ? cmd.cmd : r_int32(cmd.cmd);
 		if (cmd.cmd == LC_SEGMENT_64)
 			if (segment_64((struct s_norm2){bin, off_set, &nb_sec,
-				end, &off_sec, rez, size_file}))
+				end, &off_sec, rez, size_file}, size_file))
 				return (NULL);
 		off_set += cmd.cmdsize;
 		if (verif_offset(off_set, size_file))
