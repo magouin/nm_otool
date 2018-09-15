@@ -85,7 +85,7 @@ void	l(va_list ap, const char *c, int *x, int *o)
 		nb = (long int*)o;
 	}
 	else if (c[*x] == 'x')
-		*o += ft_putstr(ft_itoa_base_u_long(va_arg(ap, unsigned long long), 16));
+		*o += ft_putstr(ft_itoa_base_u_long(va_arg(ap, unsigned long), 16));
 	else if (c[*x] == 'X')
 		*o += ft_putstr(ft_strtoupper(
 					ft_itoa_base_u_long(va_arg(ap, unsigned long int), 16)));

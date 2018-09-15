@@ -74,7 +74,7 @@ int				multiple_argv(char **av, size_t size, int fd)
 		return (macho_32(bin, *(struct mach_header *)bin, size, head.
 			magic == MH_MAGIC ? 0 : 1));
 		ft_printf("%s: %s The file was not recognized as a valid objec\
-		t file\n", av[1] ? av[1] : "a.out", av[0]);
+t file\n", av[1] ? av[1] : "a.out", av[0]);
 	return (1);
 }
 
@@ -93,10 +93,11 @@ int				main(int ac, char **av)
 		return (1);
 	while (av[x])
 	{
+		(ac > 2) ? ft_printf("\n%s:\n", av[x]) : 0;
 		x == 1 ? 0 : (size = ft_open(av[x], av[0], &fd));
 		av[1] = av[x];
 		ret = multiple_argv(av, size, fd);
-		tmp = tmp ? 0 : ret;
+		tmp += ret;
 		close(fd);
 		x++;
 	}

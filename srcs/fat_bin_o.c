@@ -18,8 +18,8 @@ int	call_macho(void *bin, size_t off_set2, size_t s, char **av)
 		off_set2) == MH_CIGAM_64)
 	{
 		(*(struct mach_header_64 *)(bin + off_set2)).magic ==
-		MH_CIGAM_64 ? ft_printf("x86):\nContents of (__TEXT,__text) section\n") :
-		ft_printf("x86_64):\nContents of (__TEXT,__text) section\n");
+		MH_CIGAM_64 ? ft_printf("x86):\nContents of (__TEXT,__text) section\n"
+) : ft_printf("x86_64):\nContents of (__TEXT,__text) section\n");
 		if (ft_otool_64(bin + off_set2, *(struct mach_header_64 *)(bin +
 	off_set2), s, *(uint *)(bin + off_set2) == MH_MAGIC_64 ? 0 : 1))
 			return (1);
@@ -37,7 +37,7 @@ int	call_macho(void *bin, size_t off_set2, size_t s, char **av)
 		return (0);
 	}
 	ft_printf("%s: %s The file was not recognized as a valid objec\
-		t file\n", av[1] ? av[1] : "a.out", av[0]);
+t file\n", av[1] ? av[1] : "a.out", av[0]);
 	return (3);
 }
 

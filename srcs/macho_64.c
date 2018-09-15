@@ -12,42 +12,58 @@
 
 #include <ft_nm.h>
 
-static void		symtab_sec(struct symtab_command *table, struct s_norm n,
-	struct load_command cmd, struct nlist_64 **lst)
+static int		get_table(struct symtab_command *table, struct s_norm n,
+	size_t size_file)
+{
+	*table = *(struct symtab_command *)(n.bin + *n.off_set);
+	table->nsyms = !n.end ? table->nsyms : (size_t)r_int32(table->nsyms);
+	table->symoff = !n.end ? table->symoff : (size_t)r_int32(table->symoff);
+	table->stroff = !n.end ? table->stroff : (size_t)r_int32(table->stroff);
+	if (verif_offset(table->symoff, size_file) ||
+		verif_offset(table->stroff, size_file))
+		return (1);
+	return (0);
+}
+
+static int		symtab_sec(struct symtab_command *table, struct s_norm n,
+	struct nlist_64 **lst, size_t size_file)
 {
 	uint32_t						x;
 
-	if (cmd.cmd == LC_SYMTAB)
+	if (get_table(table, n, size_file))
+		return (1);
+	x = 0;
+	(*lst) = malloc(sizeof(struct nlist_64) * table->nsyms);
+	while (x < table->nsyms)
 	{
-		*table = *(struct symtab_command *)(n.bin + *n.off_set);
-		table->nsyms = !n.end ? table->nsyms : (size_t)r_int32(table->nsyms);
-		table->symoff = !n.end ? table->symoff : (size_t)r_int32(table->symoff);
-		table->stroff = !n.end ? table->stroff : (size_t)r_int32(table->stroff);
-		x = 0;
-		(*lst) = malloc(sizeof(struct nlist_64) * table->nsyms);
-		while (x < table->nsyms)
-		{
-			(*lst)[x] = *(struct nlist_64 *)((n.bin + table->symoff) + x *
-				sizeof(struct nlist_64));
-			(*lst)[x].n_un.n_strx = !n.end ? (*lst)[x].n_un.n_strx :
-			(size_t)r_int32((*lst)[x].n_un.n_strx);
-			(*lst)[x].n_sect = !n.end ? (*lst)[x].n_sect :
-			(size_t)r_int32((*lst)[x].n_sect);
-			x++;
-		}
+		(*lst)[x] = *(struct nlist_64 *)((n.bin + table->symoff) + x *
+			sizeof(struct nlist_64));
+		(*lst)[x].n_un.n_strx = !n.end ? (*lst)[x].n_un.n_strx :
+		(size_t)r_int32((*lst)[x].n_un.n_strx);
+		(*lst)[x].n_sect = !n.end ? (*lst)[x].n_sect :
+		(size_t)r_int32((*lst)[x].n_sect);
+		x++;
 	}
+	return (0);
 }
 
-static void		get_info_cmd(struct s_norm n, struct symtab_command *table,
-	struct nlist_64 **lst)
+static int		get_info_cmd(struct s_norm n, struct symtab_command *table,
+	struct nlist_64 **lst, size_t size_file)
 {
 	struct load_command				cmd;
 
+	if (verif_offset(*n.off_set, size_file))
+		return (1);
 	cmd = *(struct load_command *)(n.bin + *n.off_set);
 	cmd.cmd = !n.end ? cmd.cmd : r_int32(cmd.cmd);
-	symtab_sec(table, n, cmd, lst);
+	if (cmd.cmd == LC_SYMTAB)
+		if (symtab_sec(table, n, lst, size_file))
+			return (1);
 	cmd.cmdsize = !n.end ? cmd.cmdsize : r_int32(cmd.cmdsize);
 	*n.off_set += cmd.cmdsize;
+	if (verif_offset(*n.off_set, size_file))
+		return (1);
+	return (0);
 }
 
 int				macho_64(void *bin, struct mach_header_64 head,
@@ -68,14 +84,13 @@ int				macho_64(void *bin, struct mach_header_64 head,
 		return (1);
 	while (n < head.ncmds)
 	{
-		get_info_cmd((struct s_norm){end, &off, bin}, &table, &lst);
-		if (off >= size_file)
-		{
-			ft_printf("Binary corrupted!\n");
+		if (get_info_cmd((struct s_norm){end, &off, bin}, &table,
+			&lst, size_file))
 			return (1);
-		}
+		if (verif_offset(off, size_file))
+			return (1);
 		n++;
 	}
-	print_rez_64(lst, table, bin, rez);
+	print_rez_64(lst, table, rez, (struct s_bin){bin, size_file});
 	return (0);
 }

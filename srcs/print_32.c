@@ -13,25 +13,25 @@
 #include <ft_nm.h>
 
 static int	get_tabi(struct s_tab **tab, struct symtab_command table,
-	struct nlist *lst, void *bin)
+	struct nlist *lst, struct s_bin file)
 {
 	uint32_t		n;
 	int				mal;
 
 	*tab = malloc(sizeof(struct s_tab) * (table.nsyms + 1));
 	n = -1;
-	mal = 0;
+	mal = -1;
 	while (++n < table.nsyms)
 		if (!(lst[n].n_type & N_STAB))
 		{
-			(*tab)[mal].str = bin + table.stroff + lst[n].n_un.n_strx;
-			(*tab)[mal].nb = n;
+			(*tab)[++mal].nb = n;
+			if (verif_offset(table.stroff + lst[n].n_un.n_strx, file.size))
+				return (-2);
+			(*tab)[mal].str = file.bin + table.stroff + lst[n].n_un.n_strx;
 			(*tab)[mal].value = lst[n].n_value;
-			mal++;
 		}
-	(*tab)[mal].str = NULL;
-	(*tab)[mal].nb = 0;
-	(*tab)[mal].value = 0;
+	(*tab)[mal + 1].str = NULL;
+	(*tab)[mal + 1].nb = 0;
 	return (mal);
 }
 
@@ -53,15 +53,19 @@ static void	get_letter(struct nlist *lst, char *seg,
 	if (tmp.nb == n.end)
 	{
 		if (tmp.value)
-			ft_printf("%08x %c %s\n", *(uint *)n.bin == 0xcefaedfe ?
-		r_int32(tmp.value) : (uint)tmp.value, c, tmp.str);
+		{
+			printfllx(*(uint *)n.bin == 0xcefaedfe ? r_int32(tmp.value) :
+				tmp.value, 8, " ");
+			// write(1, &c, 1);
+			ft_printf("%c %s\n", c, tmp.str);
+		}
 		else
 			ft_printf("         %c %s\n", c, tmp.str);
 	}
 }
 
-void		print_rez_32(struct nlist *lst, struct symtab_command table,
-	void *bin, char *seg)
+int			print_rez_32(struct nlist *lst, struct symtab_command table,
+	char *seg, struct s_bin file)
 {
 	struct s_tab	*tab;
 	uint32_t		n;
@@ -69,16 +73,18 @@ void		print_rez_32(struct nlist *lst, struct symtab_command table,
 	int				*tabi;
 	struct s_tab	tmp;
 
-	d = get_tabi(&tab, table, lst, bin);
+	n = -1;
+	if ((int)(d = get_tabi(&tab, table, lst, file)) == -2)
+		return (1);
 	tabi = malloc(4 * d + 4);
 	tabi = ft_memset(tabi, 0, 4 * d + 4);
-	n = -1;
 	while (tab[++n].str)
 	{
 		tmp = get_smallest(tab, tabi);
 		d = -1;
 		while (++d < table.nsyms)
-			get_letter(lst, seg, tmp, (struct s_norm){d, NULL, bin});
+			get_letter(lst, seg, tmp, (struct s_norm){d, NULL, file.bin});
 	}
 	free(tabi);
+	return (0);
 }

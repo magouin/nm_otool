@@ -85,7 +85,8 @@ static int		segment_64(struct s_norm2 n, size_t size_file)
 
 	seg = *((struct segment_command_64 *)(n.bin + n.off_set));
 	seg.nsects = !n.end ? seg.nsects : r_int32(seg.nsects);
-	if (verif_offset((*n.off_sec = n.off_set + sizeof(struct segment_command_64)), size_file))
+	if (verif_offset((*n.off_sec = n.off_set +
+		sizeof(struct segment_command_64)), size_file))
 		return (-1);
 	if ((tmp = write_rez(n.rez, (struct s_norm){*n.nb_sec, n.off_sec, n.bin},
 		seg, n.size_file)) == -1)

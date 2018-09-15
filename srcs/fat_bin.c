@@ -33,7 +33,7 @@ int	call_macho_64(void *bin, size_t off_set2, size_t s, char **av)
 	else
 	{
 		ft_printf("%s: %s The file was not recognized as a valid ob\
-			ject file\n", av[1] ? av[1] : "a.out", av[0]);
+ject file\n", av[1] ? av[1] : "a.out", av[0]);
 		return (1);
 	}
 	return (0);
@@ -83,7 +83,7 @@ int	call_macho_32(void *bin, size_t off_set2, size_t s, char **av)
 	else
 	{
 		ft_printf("%s: %s The file was not recognized as a valid objec\
-			t file\n", av[1] ? av[1] : "a.out", av[0]);
+t file\n", av[1] ? av[1] : "a.out", av[0]);
 		return (3);
 	}
 	return (0);

@@ -14,15 +14,17 @@
 
 static int		get_nb_sec(int ncmds, int end, size_t size_file, void *bin)
 {
-	size_t					off_set;
-	int						nb_sec;
-	struct load_command		cmd;
-	struct segment_command	seg;
+	size_t						off_set;
+	struct load_command			cmd;
+	struct segment_command		seg;
+	int							nb_sec;
+	int							n;
 
 	nb_sec = 0;
 	off_set = sizeof(struct mach_header);
+	n = -1;
 	cmd = *(struct load_command *)(bin);
-	while (ncmds--)
+	while (++n < ncmds)
 	{
 		cmd = *(struct load_command *)(bin + off_set);
 		cmd.cmd = !end ? cmd.cmd : r_int32(cmd.cmd);
@@ -73,8 +75,9 @@ static int		segment_32(struct s_norm2 n, size_t size_file)
 
 	seg = *((struct segment_command *)(n.bin + n.off_set));
 	seg.nsects = !n.end ? seg.nsects : r_int32(seg.nsects);
-	if (verif_offset((*n.off_sec = n.off_set + sizeof(struct segment_command)), size_file))
-		return (1);
+	if (verif_offset((*n.off_sec = n.off_set +
+		sizeof(struct segment_command)), size_file))
+		return (-1);
 	if ((tmp = write_rez(n.rez, (struct s_norm){*n.nb_sec, n.off_sec, n.bin},
 		seg, n.size_file)) == -1)
 		return (1);
@@ -95,7 +98,7 @@ char			*get_index_32(int ncmds, int end, size_t size_file, void *bin)
 	if (rez == NULL)
 		return (rez);
 	off_set = sizeof(struct mach_header);
-	while (ncmds--)
+	while (0 < ncmds--)
 	{
 		cmd = *(struct load_command *)(bin + off_set);
 		cmd.cmdsize = !end ? cmd.cmdsize : r_int32(cmd.cmdsize);

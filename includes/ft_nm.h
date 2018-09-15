@@ -49,7 +49,7 @@ struct						s_tab
 	uint64_t				value;
 }							;
 
-struct						s_bin 
+struct						s_bin
 {
 	void					*bin;
 	size_t					size;
@@ -69,10 +69,10 @@ char						*get_index_32(int ncmds, int end, size_t size_file,
 	void *bin);
 char						*get_index_64(int ncmds, int end, size_t size_file,
 	void *bin);
-void						print_rez_32(struct nlist *lst, struct
-	symtab_command table, void *bin, char *seg);
-void						print_rez_64(struct nlist_64 *lst,
-	struct symtab_command table, void *bin, char *seg);
+int							print_rez_32(struct nlist *lst, struct
+	symtab_command table, char *seg, struct s_bin file);
+int							print_rez_64(struct nlist_64 *lst,
+	struct symtab_command table, char *seg, struct s_bin file);
 int							ft_otool_32(void *bin, struct mach_header head,
 	size_t size, int end);
 int							ft_otool_64(void *bin, struct mach_header_64 head,
