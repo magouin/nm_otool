@@ -20,7 +20,7 @@ void	print_64(size_t *x, struct section_64 section, void *bin, int end)
 			section.size)
 		{
 			printfx(*(unsigned char *)(bin + *x), 2, " \n");
-			printfllx((section.addr + *x + 1 - section.offset), 16, NULL);
+			printfllx((section.addr + *x + 1 - section.offset), 16, "\t");
 		}
 		else if (*x - section.offset < section.size)
 			printfx(*(unsigned char *)(bin + *x), 2, " ");
@@ -32,7 +32,7 @@ void	print_64(size_t *x, struct section_64 section, void *bin, int end)
 			section.size)
 		{
 			printfx(r_int32(*(uint *)(bin + *x)), 8, " \n");
-			printfllx((section.addr + *x + 4 - section.offset), 16, NULL);
+			printfllx((section.addr + *x + 4 - section.offset), 16, "\t");
 		}
 		else if (*x - section.offset < section.size)
 			printfx(r_int32(*(uint *)(bin + *x)), 8, NULL);
@@ -58,7 +58,7 @@ int		get_sec_text_64(struct s_bin file, struct segment_command_64 seg,
 		if (ft_strequ(section.sectname, "__text"))
 		{
 			x = section.offset;
-			printfllx((section.addr + x - section.offset), 16, NULL);
+			printfllx((section.addr + x - section.offset), 16, "\t");
 			while (x < file.size && x - section.offset < section.size)
 				print_64(&x, section, file.bin, end);
 			write(1, "\n", 1);

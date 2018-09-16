@@ -52,7 +52,7 @@ static void	get_letter(struct nlist_64 *lst, char *seg,
 		c += 32;
 	if (tmp.nb == n.end)
 	{
-		if (tmp.value)
+		if (tmp.value || (lst[n.end].n_type & N_SECT) == N_SECT)
 		{
 			printfllx(*(uint *)n.bin == 0xcefaedfe ? r_int64(tmp.value) :
 				tmp.value, 16, " ");
