@@ -40,8 +40,6 @@ static int		symtab_sec(struct symtab_command *table, struct s_norm n,
 			sizeof(struct nlist_64));
 		(*lst)[x].n_un.n_strx = !n.end ? (*lst)[x].n_un.n_strx :
 		(size_t)r_int32((*lst)[x].n_un.n_strx);
-		(*lst)[x].n_sect = !n.end ? (*lst)[x].n_sect :
-		(size_t)r_int32((*lst)[x].n_sect);
 		x++;
 	}
 	return (0);

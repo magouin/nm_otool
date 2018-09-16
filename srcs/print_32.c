@@ -56,7 +56,6 @@ static void	get_letter(struct nlist *lst, char *seg,
 		{
 			printfllx(*(uint *)n.bin == 0xcefaedfe ? r_int32(tmp.value) :
 				tmp.value, 8, " ");
-			// write(1, &c, 1);
 			ft_printf("%c %s\n", c, tmp.str);
 		}
 		else
