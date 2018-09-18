@@ -44,14 +44,20 @@ size_t			ft_open(char *name, char *exec, int *fd)
 	*fd = open(name, O_RDONLY);
 	if (*fd == -1)
 		ft_printf("%s: %s: No such file or directory\n", exec, name);
-	if (fstat(*fd, &buff) != -1)
+	else if (fstat(*fd, &buff) != -1)
 	{
 		size = buff.st_size;
 		if (buff.st_mode & S_IFDIR)
 		{
 			ft_printf("%s: %s: Is a directory.\n", exec, name);
+			close(*fd);
 			size = 0;
 		}
+	}
+	else
+	{
+		close(*fd);
+		size = 0;
 	}
 	return (size);
 }
@@ -84,20 +90,22 @@ int				main(int ac, char **av)
 	int						tmp;
 	size_t					size;
 	int						fd;
-	int						ret;
 
 	x = 1;
-	(void)ac;
 	tmp = 0;
-	if (!(size = ft_open(av[1] ? av[1] : "a.out", av[0], &fd)))
-		return (1);
+	ac == 1 ? av[1] = "a.out" : 0;
+	ac == 1 ? av[2] = NULL : 0;
 	while (av[x])
 	{
+		if (!(size = ft_open(av[x], av[0], &fd)))
+		{
+			x++;
+			tmp++;
+			continue ;
+		}
 		(ac > 2) ? ft_printf("\n%s:\n", av[x]) : 0;
-		x == 1 ? 0 : (size = ft_open(av[x], av[0], &fd));
 		av[1] = av[x];
-		ret = multiple_argv(av, size, fd);
-		tmp += ret;
+		tmp += multiple_argv(av, size, fd);
 		close(fd);
 		x++;
 	}
